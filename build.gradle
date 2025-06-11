@@ -1,0 +1,68 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'checkstyle'
+}
+
+configurations {
+  testCompile
+}
+
+// Pour compatibilité avec UTF-8 (importation carte MazeConfig.java)
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+group 'fr.u-paris.informatique.cproj'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation group: 'org.testfx', name: 'testfx-junit5', version: '4.0.17'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.14.0'
+    implementation group: 'org.json', name: 'json', version: '20231013'
+}
+
+javafx {
+    version = "17"
+    modules = [ 'javafx.controls', 'javafx.media' ]
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+mainClassName = 'gui.Launcher'
+
+test {
+    useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion = '10.12.4'
+    configFile = file("config/checkstyle/checkstyle.xml")
+}
+checkstyleMain {
+    source ='src/main/java'
+}
+checkstyleTest {
+    source ='src/test/java'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'gui.Launcher'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}

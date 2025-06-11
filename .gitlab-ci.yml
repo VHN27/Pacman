@@ -1,0 +1,52 @@
+image: gradle:8-jdk17-alpine
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dhttps.proxyHost=193.254.199.96 -Dhttps.proxyPort=3128 -Dhttps.proxyHost=194.254.199.96 -Dhttps.proxyPort=3128"
+    
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+stages:
+  - lint
+  - build
+  - test
+  - deploy
+    
+styleMain:
+  stage: lint
+  script: gradle checkstyleMain
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+
+styleTest:
+  stage: lint
+  script: gradle checkstyleTest
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+    
+build:
+  stage: build
+  script: gradle --build-cache assemble
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
+
+test:
+  stage: test
+  script: gradle check
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
