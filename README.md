@@ -47,6 +47,7 @@ Leveraged **Gradle** for efficient dependency management and lifecycle automatio
    ```bash
    git clone [https://github.com/yourusername/pacman-java.git](https://github.com/yourusername/pacman-java.git)
 2. **Build with Gradle**
+   ```bash
    ./gradlew build
 4. **Run the Application:**
    ```bash
